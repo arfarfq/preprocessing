@@ -1,6 +1,5 @@
 import numpy as np
 import lightkurve as lk
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pandas as pd
 import sqlite3
