@@ -1,0 +1,11 @@
+numpy
+lightkurve
+from tqdm import tqdm
+pandas
+sqlite3
+astropy
+h5py
+concurrent.futures
+logging
+scipy.signal
+matplotlib
