@@ -17,12 +17,13 @@ from scipy.signal import savgol_filter
 from scipy.interpolate import make_smoothing_spline
 
 
-logging.basicConfig(filename='errors.log', level=logging.ERROR)
+
+logging.basicConfig(filename='/mnt/data/errors.log', level=logging.ERROR)
 
 # Global configuration
 TEST_MODE = True
 TEST_LIMIT = 4 if TEST_MODE else None
-MAX_WORKERS = 7
+MAX_WORKERS = 64
 SAMPLE_SIZE= 256 * 4
 BIN_SIZE_DENOMINATOR = 10
 SAVITZKY_GOLAY_WINDOW = 21
@@ -204,8 +205,10 @@ def process_light_curves(df_path, df_feat, test_limit=None):
             np.array(labels), 
             df_merged)
 
-def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename="LCs_1024_CNN_Input.h5"):
+def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename="/mnt/data/LCs_1024_CNN_Input.h5"):
     """Save processed light curves and metadata to an HDF5 file."""
+
+    
     with h5py.File(filename, "w") as f:
         # Save numpy arrays
         f.create_dataset("local_inputs", data=local_inputs, compression="gzip", chunks=True)
