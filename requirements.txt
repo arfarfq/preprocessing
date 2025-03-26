@@ -5,5 +5,4 @@ pandas
 astropy
 h5py
 scipy
-sqlite3
 logging
