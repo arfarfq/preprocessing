@@ -31,7 +31,7 @@ SAVITZKY_GOLAY_POLYORDER = 2
 
 def fetchTIC():
     # Connect to database
-    connection = sqlite3.connect('toi_database.db') 
+    connection = sqlite3.connect('/mnt/data/toi_database_no_folder.db') 
 
     df_path = pd.read_sql_query("SELECT TIC, Sector, path_to_fits FROM LightCurves", connection)
     df_feat = pd.read_sql_query('SELECT TIC, "TOI Disposition" FROM TOIs', connection)
