@@ -5,4 +5,6 @@ pandas
 astropy
 h5py
 scipy
-matplotlib
+sqlite3
+concurrent.futures
+logging
