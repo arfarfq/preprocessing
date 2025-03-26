@@ -16,9 +16,9 @@ from scipy.interpolate import make_smoothing_spline
 
 
 # Global configuration
-TEST_MODE = True
+TEST_MODE = False
 TEST_LIMIT = 4 if TEST_MODE else None
-MAX_WORKERS = 64
+MAX_WORKERS = 32
 SAMPLE_SIZE= 256 * 4
 BIN_SIZE_DENOMINATOR = 10
 SAVITZKY_GOLAY_WINDOW = 21
@@ -28,7 +28,6 @@ SAVITZKY_GOLAY_POLYORDER = 2
 def fetchTIC():
     # Connect to database
     connection = sqlite3.connect('/mnt/data/toi_database_no_folder.db') 
-
     df_path = pd.read_sql_query("SELECT TIC, Sector, path_to_fits FROM LightCurves", connection)
     df_feat = pd.read_sql_query('SELECT TIC, "TOI Disposition" FROM TOIs', connection)
     connection.close()
