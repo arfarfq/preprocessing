@@ -176,25 +176,42 @@ def process_light_curves(df_path, df_feat, test_limit=None):
 
     # Parallel processing
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # Submit all tasks
-        future_to_row = {executor.submit(process_single_light_curve, row): row 
-                        for _, row in df_merged.iterrows()}
-        
-        # Process results as they complete
-        for future in tqdm(concurrent.futures.as_completed(future_to_row), 
-                         total=len(future_to_row), 
+        # Map each future to its original DataFrame index
+        future_to_index = {}
+        for index, row in df_merged.iterrows():
+            future = executor.submit(process_single_light_curve, row)
+            future_to_index[future] = index
+
+        # Collect results as they complete
+        results = []
+        for future in tqdm(concurrent.futures.as_completed(future_to_index), 
+                         total=len(future_to_index), 
                          desc="Processing Light Curves"):
+            index = future_to_index[future]
             result = future.result()
+            results.append((index, result))
+        
+        # Sort results by original index to maintain order
+        results.sort(key=lambda x: x[0])
+        
+        # Extract successful results in order
+        successful_indices = []
+        for index, result in results:
             if result is not None:
                 local_input, global_input, label = result
                 local_inputs.append(local_input)
                 global_inputs.append(global_input)
                 labels.append(label)
-
+                successful_indices.append(index)
+    
+    # Filter the merged DataFrame to only include successfully processed rows
+    df_merged_successful = df_merged.loc[successful_indices]
+    
     return (np.array(local_inputs), 
             np.array(global_inputs), 
             np.array(labels), 
-            df_merged)
+            df_merged_successful)
+
 
 def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename="/mnt/data/LCs_1024_CNN_Input.h5"):
     """Save processed light curves and metadata to an HDF5 file."""
