@@ -9,15 +9,11 @@ from astropy import units as u
 from astropy.time import TimeDelta
 import h5py
 import concurrent.futures
-import logging
 from scipy.signal import medfilt
 import lightkurve as lk
 from scipy.signal import savgol_filter
 from scipy.interpolate import make_smoothing_spline
 
-
-
-logging.basicConfig(filename='/mnt/data/errors.log', level=logging.ERROR)
 
 # Global configuration
 TEST_MODE = True
@@ -151,17 +147,14 @@ def process_single_light_curve(row):
         label = label_toi_disposition(disposition)
         
         if local_input is None or len(local_input) == 0:
-            logging.warning(f"Empty local input for TIC {tic}")
             local_input = np.zeros((SAMPLE_SIZE, 1), dtype=np.float32)
             
         if global_input is None or len(global_input) == 0:
-            logging.warning(f"Empty global input for TIC {tic}")
             return None
             
         return (local_input, global_input, label)
     
     except Exception as e:
-        logging.error(f"Error processing TIC {tic}: {str(e)}")
         return None
 
 def process_light_curves(df_path, df_feat, test_limit=None):
