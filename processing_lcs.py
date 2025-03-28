@@ -21,8 +21,6 @@ TEST_LIMIT = 4 if TEST_MODE else None
 MAX_WORKERS = 32
 SAMPLE_SIZE= 256 * 4
 BIN_SIZE_DENOMINATOR = 10
-SAVITZKY_GOLAY_WINDOW = 21
-SAVITZKY_GOLAY_POLYORDER = 2
 
 
 def fetchTIC():
@@ -62,13 +60,8 @@ def lc_preprocess(lc):
     t0 = pg.transit_time_at_max_power
     t_dur = pg.duration_at_max_power
     
-
-    # Savitzky Golay
-    filtered_flux = savgol_filter(lc_flat.flux.value, window_length= SAVITZKY_GOLAY_WINDOW, polyorder=SAVITZKY_GOLAY_POLYORDER)
-    svg = lk.LightCurve(time=lc_flat.time, flux=filtered_flux)
-
     # Fold on best period
-    global_lc = svg.fold(period=best_period, epoch_time=t0)
+    global_lc = lc_flat.fold(period=best_period, epoch_time=t0)
 
     global_lc_no_filter = lc_flat.fold(period=best_period, epoch_time=t0)
 
@@ -226,7 +219,7 @@ def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename
         # Define metadata dtype with EXACT column names matching df_merged
         metadata_dtype = [
             ('TIC', int),
-            ('sector', int),  # <-- Now matches DataFrame's 'Sector' (capitalized)
+            ('sector', int),  
             ('path_to_fits', h5py.string_dtype()),
             ('TOI Disposition', h5py.string_dtype()),
             ('label', int)
