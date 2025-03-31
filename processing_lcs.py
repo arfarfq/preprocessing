@@ -25,7 +25,7 @@ BIN_SIZE_DENOMINATOR = 10
 
 def fetchTIC():
     # Connect to database
-    connection = sqlite3.connect('/mnt/data/toi_database_no_folder.db') 
+    connection = sqlite3.connect('/mnt/data/tce_database.db') 
     df_path = pd.read_sql_query("SELECT TIC, Sector, path_to_fits FROM LightCurves", connection)
     df_feat = pd.read_sql_query('SELECT TIC, "TOI Disposition" FROM TOIs', connection)
     connection.close()
@@ -206,7 +206,7 @@ def process_light_curves(df_path, df_feat, test_limit=None):
             df_merged_successful)
 
 
-def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename="/mnt/data/LCs_1024_CNN_Input.h5"):
+def save_processed_data(local_inputs, global_inputs, labels, df_merged, filename="/mnt/data/TCEs_LCs_1024_CNN_Input.h5"):
     """Save processed light curves and metadata to an HDF5 file."""
 
     
